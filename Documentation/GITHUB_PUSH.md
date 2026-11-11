@@ -46,44 +46,51 @@ git push -u origin main          # نام کاربری + توکن را می‌پ
   `CyberWorkspace-portable` و `CyberWorkspace-installer`.
 - `android-build`: تست‌های واحد → `assembleDebug` → artifact: `CyberWorkspace-remote-debug-apk`.
 
-## ۴. جای‌گذاری خروجی‌ها در پوشهٔ اصلی
+## ۴ و ۵. جای‌گذاری خروجی‌ها + به‌روزرسانی ZIP پشتیبان (یک دستور)
 
-از تب Actions → اجرای موفق → بخش Artifacts دانلود کنید و دقیقاً اینجا بگذارید:
-
-| artifact دانلودی | مقصد در این پوشه |
-| --- | --- |
-| `CyberWorkspace-installer` (فایل `CyberWorkspace-1.0.0-rc.1-setup.exe`) | `Installer/Windows/` |
-| `CyberWorkspace-portable` (کل پوشهٔ `CyberWorkspace/`) | `Installer/Windows/portable/` (اختیاری؛ زیپ کنید) |
-| `CyberWorkspace-remote-debug-apk` (فایل `app-debug.apk`) | `Installer/Android/` (نام را به `cyber-workspace-remote-debug.apk` تغییر دهید) |
-
-## ۵. به‌روزرسانی ZIP پشتیبان
-
-پس از جای‌گذاری خروجی‌ها، پشتیبان را بازتولید کنید (از ریشهٔ مخزن):
+پس از سبز شدن هر دو workflow، کل مرحلهٔ «دریافت خروجی واقعی → جای‌گذاری در
+`Installer/` → بازتولید پشتیبان» با یک دستور انجام می‌شود:
 
 ```bash
-cd "Cyber Workspace"
-python3 - <<'PY'
-import zipfile, pathlib
-root = pathlib.Path('.')
-out  = root / 'Backup' / 'Cyber-Workspace-Full-Backup.zip'
-out.parent.mkdir(exist_ok=True)
-skip = {'__pycache__', '.git', '.pytest_cache', '.venv', 'build', 'dist', '.gradle'}
-with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
-    for p in sorted(root.rglob('*')):
-        if any(s in p.parts for s in skip) or p == out or not p.is_file():
-            continue
-        z.write(p, p.as_posix())
-print('backup written:', out)
-PY
+GITHUB_TOKEN=ghp_xxxxxxxxxxxx bash Build/Scripts/fetch_artifacts.sh <نام‌کاربری‌گیت‌هاب> cyber-workspace
 ```
 
-(همین کار در محیط تحویل با `scripts/rebuild_backup.py` انجام شده؛ الگوی یکسان است.)
+اسکریپت چه می‌کند؟
+1. آخرین اجرای موفق `windows-build` و `android-build` روی `main` را پیدا می‌کند.
+2. سه artifact را دانلود و دقیقاً سر جای خود می‌گذارد:
+
+| artifact | مقصد نهایی |
+| --- | --- |
+| `CyberWorkspace-installer` (`*-setup.exe`) | `Installer/Windows/` |
+| `CyberWorkspace-portable` (پوشهٔ `CyberWorkspace/`) | `Installer/Windows/portable/` |
+| `CyberWorkspace-remote-debug-apk` (`app-debug.apk`) | `Installer/Android/cyber-workspace-remote-debug.apk` |
+
+3. `Backup/Cyber-Workspace-Full-Backup.zip` را **با خروجی‌ها درونش** بازتولید
+   می‌کند (فایل‌های کلاس راز مستثنا هستند) و تعداد فایل + SHA-256 چاپ می‌کند.
+
+فقط بازتولید پشتیبان (بدون شبکه/توکن):
+
+```bash
+bash Build/Scripts/fetch_artifacts.sh --backup-only
+```
+
+### جای‌گذاری دستی (جایگزین)
+
+از تب Actions → اجرای موفق → بخش Artifacts دانلود کنید و طبق جدول بالا بگذارید.
+
 
 ## ۶. چک‌لیست نهایی تحویل
 
-- [ ] مخزن روی GitHub و شاخهٔ main همگام
+- [ ] مخزن روی GitHub و شاخهٔ main همگام (بند ۲)
 - [ ] Actions: هر دو workflow سبز
-- [ ] `Installer/Windows/` شامل setup.exe
-- [ ] `Installer/Android/` شامل APK
+- [ ] `bash Build/Scripts/fetch_artifacts.sh …` اجرا شده →
+      `Installer/Windows/` شامل setup.exe و portable، `Installer/Android/` شامل APK
 - [ ] `Backup/Cyber-Workspace-Full-Backup.zip` بازتولیدشده و تست‌پذیر
 - [ ] فایل ضروری‌ای بیرون از پوشهٔ `Cyber Workspace/` باقی نمانده
+
+## ۷. آیکون برنامه
+
+آیکون اصلی، تصویر تاج (`Source/Shared/assets/crown-source.png`) است و در کل
+زنجیره اعمال شده: `app_icon_1024/512/256.png`، ویندوز `cyber_workspace.ico`
+(۱۶ تا ۲۵۶ پیکسل، تعبیه‌شده در exe و نصاب)، و اندروید `mipmap-*` در همهٔ
+چگالی‌ها + آیکون تطبیقی (adaptive). نیازی به کار اضافه نیست.
