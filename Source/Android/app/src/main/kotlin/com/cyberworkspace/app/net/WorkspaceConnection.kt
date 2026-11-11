@@ -407,7 +407,7 @@ class WorkspaceConnection(
     }
 
     private inline fun <reified T : Any> decode(payload: JsonObject): T? = try {
-        ProtocolJson.decodeFromJsonElement(payload)
+        ProtocolJson.decodeFromJsonElement<T>(payload)
     } catch (e: Exception) {
         Log.w(TAG, "malformed payload: ${e.message}")
         null

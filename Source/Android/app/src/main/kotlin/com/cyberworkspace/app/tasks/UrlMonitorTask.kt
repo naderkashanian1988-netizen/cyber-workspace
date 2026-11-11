@@ -65,7 +65,7 @@ class UrlMonitorTask(
     suspend fun runCycle(): UrlCheckResult {
         beginCycle()
         return withContext(Dispatchers.IO) {
-            val request = Request.Builder().url(url).GET().build()
+            val request = Request.Builder().url(url).build()  // GET is the default method
             try {
                 client.newCall(request).execute().use { response ->
                     val code = response.code
