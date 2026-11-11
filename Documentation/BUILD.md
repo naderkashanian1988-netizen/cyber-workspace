@@ -79,6 +79,7 @@ identity, theme colours `#0A0C0A` + `#00FF66`):
 | Android round | `mipmap-*/ic_launcher_round.png` | `android:roundIcon` slot / launcher |
 | Android adaptive (API 26+) | `mipmap-*/ic_launcher_foreground.png` + `drawable/ic_launcher_background.xml` | `mipmap-anydpi-v26/ic_launcher*.xml` |
 | Master/reference | `Source/Shared/assets/app_icon_1024.png`, `app_icon_512.png` | documentation, store listing |
+| Original artwork | `Source/Shared/assets/crown-source.png` | the user-supplied crown image (413 px), preserved as provenance |
 
 The 1024 px master is upscaled from a 413 px original (LANCZOS) — honest
 note: it is sharp at launcher sizes, but not a native-resolution redraw.
