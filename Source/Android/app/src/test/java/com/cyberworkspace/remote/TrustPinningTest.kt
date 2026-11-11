@@ -109,4 +109,5 @@ class TrustPinningTest {
             override fun toString(): String = "StubCert"
             override fun getFormat() = "X.509"
             override fun getAlgorithm() = "RSA"
-        }
+        }  // object : X509Certificate — expression body of stubCert ends here
+}  // TrustPinningTest
