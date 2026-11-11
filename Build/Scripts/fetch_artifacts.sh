@@ -89,9 +89,9 @@ fetch_artifact() {  # $1=workflow-file  $2=artifact-name  $3=dest-dir
         | python3 -c 'import json,sys; r=json.load(sys.stdin)["workflow_runs"]; print(r[0]["id"] if r else "")')"
     [ -n "$run_id" ] || { echo "error: no successful run of $wf on main — push first and wait for Actions to finish"; exit 1; }
     echo "   run: https://github.com/$GH_USER/$REPO/actions/runs/$run_id"
-    art_id="$(ART="$art" curl -sSfL -H "$(auth_header)" \
+    art_id="$(curl -sSfL -H "$(auth_header)" \
         "$API/$GH_USER/$REPO/actions/runs/$run_id/artifacts?per_page=100" \
-        | python3 -c 'import json,sys,os
+        | ART="$art" python3 -c 'import json,sys,os
 arts=json.load(sys.stdin)["artifacts"]
 name=os.environ["ART"]
 m=[a for a in arts if a["name"]==name and not a["expired"]]
@@ -106,8 +106,9 @@ print(m[0]["id"] if m else "")')"
         CyberWorkspace-installer)
             mv "$tmp"/x/*-setup.exe "$dest/" ;;
         CyberWorkspace-portable)
+            # upload-artifact flattens dist/CyberWorkspace/ into the zip root
             rm -rf "$dest"; mkdir -p "$dest"
-            mv "$tmp"/x/CyberWorkspace "$dest/" ;;
+            mv "$tmp"/x/* "$dest/" ;;
         CyberWorkspace-remote-debug-apk)
             mv "$tmp"/x/app-debug.apk "$dest/cyber-workspace-remote-debug.apk" ;;
     esac
