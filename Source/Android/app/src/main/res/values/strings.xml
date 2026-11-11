@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App identity -->
+    <string name="app_name">CYBER WORKSPACE</string>
+
+    <!-- Notification channels -->
+    <string name="channel_tasks">Task updates</string>
+    <string name="channel_approvals">Approvals</string>
+
+    <!-- Screen titles -->
+    <string name="pairing_title">Pair with Windows workspace</string>
+    <string name="dashboard_title">Dashboard</string>
+    <string name="notifications_title">Notifications</string>
+    <string name="local_tasks_title">Local tasks</string>
+    <string name="settings_title">Settings</string>
+
+    <!-- Pairing -->
+    <string name="pairing_fingerprint_prompt">Before trusting this connection, verify that the SHA-256 fingerprint below matches the one shown on the Windows host.</string>
+    <string name="not_paired_hint">Not paired yet. Enter the Windows host address and the 6-digit pairing code shown on the Windows host.</string>
+
+    <!-- Task actions -->
+    <string name="approve">Approve</string>
+    <string name="deny">Deny</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="restart">Restart</string>
+    <string name="close">Close</string>
+
+    <!-- TriTimer buckets -->
+    <string name="timer_active">Active</string>
+    <string name="timer_waiting">Waiting</string>
+    <string name="timer_error">Error</string>
+    <string name="timer_paused">Paused</string>
+    <string name="timer_unknown">Unknown</string>
+
+    <!-- Permission and honesty notes -->
+    <string name="permission_control_note">This device has view + control permission</string>
+    <string name="permission_view_note">This device has view-only permission</string>
+    <string name="doze_note">Android may suspend local tasks in Doze mode; suspended intervals are reported as Unknown, never counted as active work.</string>
+    <string name="remote_note">Windows execution stays on the Windows host. This app monitors and controls it remotely.</string>
+
+</resources>

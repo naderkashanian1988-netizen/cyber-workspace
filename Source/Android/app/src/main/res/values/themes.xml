@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+        CYBER WORKSPACE theme. Material 3 DayNight with NoActionBar; the
+        window and status bar share the near-black surface #0A0C0A so the
+        neon green (#00FF66) accents read cleanly on every screen.
+    -->
+    <style name="Theme.CyberWorkspace" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">#0A0C0A</item>
+        <item name="android:statusBarColor">#0A0C0A</item>
+    </style>
+
+</resources>

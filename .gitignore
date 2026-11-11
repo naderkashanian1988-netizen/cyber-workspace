@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.spec.bak
+
+# PySide6 build litter
+
+# Android
+*.apk
+*.aab
+.gradle/
+build/
+local.properties
+*.keystore
+!debug.keystore
+captures/
+.externalNativeBuild/
+
+# Secrets — never commit
+*.pem
+*.key
+settings.json
+workspace.db*
+workspace.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Delivery artifacts — rebuilt/re-downloaded, never source
+Backup/*.zip
+Installer/Windows/*.exe
+Installer/Windows/portable/

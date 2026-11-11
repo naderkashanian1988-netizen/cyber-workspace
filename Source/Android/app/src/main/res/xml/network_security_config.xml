@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  CYBER WORKSPACE network security policy.
+  Cleartext is forbidden everywhere: the wire protocol is NDJSON over TLS only.
+  Certificate pinning is enforced in code (net/TrustPinning.kt) because the pin
+  is user-confirmed at pairing time and stored in EncryptedSharedPreferences —
+  it cannot be baked into a static XML file.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

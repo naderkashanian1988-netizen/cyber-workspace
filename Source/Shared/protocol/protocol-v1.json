@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cyber-workspace.local/schemas/protocol-v1.json",
+  "title": "CYBER WORKSPACE Remote Protocol v1 envelope",
+  "type": "object",
+  "required": ["v", "op", "seq", "ts", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "v": { "const": 1 },
+    "op": {
+      "type": "string",
+      "enum": [
+        "pairing", "auth", "subscribe", "unsubscribe", "get_state", "get_task",
+        "get_logs", "command", "approve", "ping",
+        "welcome", "pairing_ok", "auth_ok", "auth_failed", "state_snapshot",
+        "task_event", "metrics", "notification", "approval_request",
+        "command_ack", "error", "pong"
+      ]
+    },
+    "seq": { "type": "integer", "minimum": 0 },
+    "ts": { "type": "string", "format": "date-time" },
+    "payload": { "type": "object" }
+  },
+  "defs": {
+    "TaskState": {
+      "type": "string",
+      "enum": ["RUNNING", "WAITING_FOR_USER", "NETWORK_WAITING", "COMPLETED", "ERROR", "UNRESPONSIVE", "PAUSED", "UNKNOWN"]
+    },
+    "NotificationCategory": {
+      "type": "string",
+      "enum": ["approval_required", "permission_required", "task_error", "network_interruption",
+               "task_completed", "task_crashed", "task_unresponsive", "security_warning",
+               "recovery_required", "info"]
+    },
+    "CommandAction": {
+      "type": "string",
+      "enum": ["pause", "resume", "restart", "close", "set_keep_awake"]
+    },
+    "TaskSnapshot": {
+      "type": "object",
+      "required": ["id", "name", "type", "state", "reason", "active_ms", "waiting_ms", "error_ms",
+                   "paused_ms", "unknown_ms", "cpu_percent", "ram_mb", "last_activity_utc",
+                   "last_progress", "keep_awake", "minimized", "pid", "app", "created_utc",
+                   "pending_approval"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["script", "terminal", "external", "browser"] },
+        "state": { "$ref": "#/defs/TaskState" },
+        "reason": { "type": ["string", "null"] },
+        "active_ms": { "type": "integer", "minimum": 0 },
+        "waiting_ms": { "type": "integer", "minimum": 0 },
+        "error_ms": { "type": "integer", "minimum": 0 },
+        "paused_ms": { "type": "integer", "minimum": 0 },
+        "unknown_ms": { "type": "integer", "minimum": 0 },
+        "cpu_percent": { "type": ["number", "null"] },
+        "ram_mb": { "type": ["number", "null"] },
+        "last_activity_utc": { "type": ["string", "null"] },
+        "last_progress": { "type": ["string", "null"] },
+        "keep_awake": { "type": "boolean" },
+        "minimized": { "type": "boolean" },
+        "pid": { "type": ["integer", "null"] },
+        "app": { "type": ["string", "null"] },
+        "created_utc": { "type": "string" },
+        "pending_approval": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "required": ["id", "question", "options"],
+              "properties": {
+                "id": { "type": "string" },
+                "question": { "type": "string" },
+                "options": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "SystemStatus": {
+      "type": "object",
+      "required": ["cpu_percent", "ram_percent", "ram_used_mb", "ram_total_mb", "net", "keep_awake_active", "server_time"],
+      "properties": {
+        "cpu_percent": { "type": ["number", "null"] },
+        "ram_percent": { "type": ["number", "null"] },
+        "ram_used_mb": { "type": ["number", "null"] },
+        "ram_total_mb": { "type": ["number", "null"] },
+        "keep_awake_active": { "type": "boolean" },
+        "server_time": { "type": "string" },
+        "net": {
+          "type": "object",
+          "required": ["down_bps", "up_bps", "latency_ms", "status"],
+          "properties": {
+            "down_bps": { "type": ["number", "null"] },
+            "up_bps": { "type": ["number", "null"] },
+            "latency_ms": { "type": ["number", "null"], "description": "TCP connect latency probe, not ICMP" },
+            "status": { "type": "string", "enum": ["UP", "DOWN", "UNKNOWN"] }
+          }
+        }
+      }
+    }
+  }
+}
