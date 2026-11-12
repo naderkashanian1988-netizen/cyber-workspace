@@ -1,6 +1,7 @@
 """Offscreen UI smoke test (skipped when Qt/offscreen is unavailable)."""
 import os
 import time
+from pathlib import Path
 
 import pytest
 
@@ -8,7 +9,7 @@ pytest.importorskip("PySide6.QtWidgets")
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtCore import QTimer  # noqa: E402
+from PySide6.QtCore import QLockFile, QStandardPaths, QTimer  # noqa: E402
 from PySide6.QtWidgets import QApplication  # noqa: E402
 
 from cyber_workspace.core.engine import TaskEngine          # noqa: E402
@@ -21,6 +22,17 @@ from cyber_workspace.ui.theme import qss                    # noqa: E402
 def qapp():
     app = QApplication.instance() or QApplication([])
     yield app
+
+
+def test_app_lock_uses_standard_location_enum(qapp):
+    """Regression: app.main() lock file must use QStandardPaths.StandardLocation
+    (not StandardPath). Covers the exact expression used in app.main()."""
+    lock = QLockFile(str(Path(QStandardPaths.writableLocation(
+        QStandardPaths.StandardLocation.TempLocation)) / "cyber-workspace-test.lock"))
+    try:
+        assert lock.tryLock(100)
+    finally:
+        lock.unlock()
 
 
 def test_dashboard_smoke(qapp, tmp_path, fake_script):

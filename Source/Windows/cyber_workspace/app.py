@@ -91,7 +91,7 @@ def main(argv: list[str] | None = None) -> int:
         app.setWindowIcon(icon)
 
     lock = QLockFile(str(Path(QStandardPaths.writableLocation(
-        QStandardPaths.StandardPath.TempLocation)) / "cyber-workspace.lock"))
+        QStandardPaths.StandardLocation.TempLocation)) / "cyber-workspace.lock"))
     if not lock.tryLock(100):
         QMessageBox.warning(None, "CYBER WORKSPACE",
                             "Another instance is already running.")
